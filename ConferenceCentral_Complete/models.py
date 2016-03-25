@@ -27,6 +27,7 @@ class Profile(ndb.Model):
     mainEmail = ndb.StringProperty()
     teeShirtSize = ndb.StringProperty(default='NOT_SPECIFIED')
     conferenceKeysToAttend = ndb.StringProperty(repeated=True)
+    sessionKeysInWishlist = ndb.StringProperty(repeated=True)
 
 class ProfileMiniForm(messages.Message):
     """ProfileMiniForm -- update Profile form message"""
@@ -39,6 +40,10 @@ class ProfileForm(messages.Message):
     mainEmail = messages.StringField(2)
     teeShirtSize = messages.EnumField('TeeShirtSize', 3)
     conferenceKeysToAttend = messages.StringField(4, repeated=True)
+
+class ProfileForms(messages.Message):
+    """ProfileForms -- multiple Profile outbound form message"""
+    items = messages.MessageField(ProfileForm, 1, repeated=True)
 
 class StringMessage(messages.Message):
     """StringMessage-- outbound (single) string message"""
@@ -107,4 +112,35 @@ class ConferenceQueryForm(messages.Message):
 class ConferenceQueryForms(messages.Message):
     """ConferenceQueryForms -- multiple ConferenceQueryForm inbound form message"""
     filters = messages.MessageField(ConferenceQueryForm, 1, repeated=True)
+
+#define sessions
+
+class Session(ndb.Model):
+    """Session -- Session object"""
+    name            = ndb.StringProperty()
+    highlights      = ndb.StringProperty()
+    speaker         = ndb.StringProperty(required = True)
+    duration        = ndb.IntegerProperty()
+    typeOfSession   = ndb.StringProperty(repeated = True)
+    date            = ndb.DateProperty()
+    startTime       = ndb.TimeProperty()
+
+class SessionForm(messages.Message):
+
+    """SessionForm -- Session outbound form message"""
+    name            = messages.StringField(1)
+    highlights      = messages.StringField(2)
+    speaker         = messages.StringField(3)
+    duration        = messages.IntegerField(4)
+    typeOfSession   = messages.StringField(5, repeated = True)
+    date            = messages.StringField(6)
+    startTime       = messages.StringField(7)
+    sessionSafeKey  = messages.StringField(8)
+
+
+class SessionForms(messages.Message):
+
+    """SessionForms -- multiple Session outbound form message"""
+    items = messages.MessageField(SessionForm, 1, repeated = True)
+
 
